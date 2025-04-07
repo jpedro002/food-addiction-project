@@ -1,0 +1,13 @@
+POST http://localhost:5000/predict-run
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="file"; filename="chpct.mp4"
+Content-Type: video/mp4
+
+< ./http-tests/chpct.mp4
+--boundary
+Content-Disposition: form-data; name="predictType"
+
+a
+--boundary--

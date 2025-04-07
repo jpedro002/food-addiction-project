@@ -1,0 +1,27 @@
+#TODO fix secret password
+name: Docker Login and Push
+description: Log in to Docker Hub and push an image
+inputs:
+  context:
+    description: "Build context"
+    required: true
+  dockerfile:
+    description: "Dockerfile path"
+    required: true
+  image:
+    description: "Docker image name"
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Login no Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Construir e enviar Docker Image
+      shell: bash
+      run: |
+        docker build -t ${{ inputs.image }} ${{ inputs.context }} -f ${{ inputs.dockerfile }}
+        docker push ${{ inputs.image }}

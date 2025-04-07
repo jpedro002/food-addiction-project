@@ -1,0 +1,80 @@
+services:
+  frontend:
+    container_name: frontend_dev_food_adction
+    build:
+      context: ./front-end
+      dockerfile: Dockerfile.dev
+    env_file:
+      - ./front-end/.env
+    ports:
+      - "5173:5173"
+    restart: always
+    volumes:
+      - ./front-end:/app
+      - /app/node_modules
+
+  api:
+    container_name: api_node_dev_food_adction
+    build:
+      context: ./api-node
+      dockerfile: Dockerfile.dev
+    env_file:
+      - ./api-node/.env
+    ports:
+      - "3000:3000"
+      - "5555:5555"
+    restart: always
+    depends_on:
+      - postgresql
+    networks:
+      - my_network_food_adction
+    volumes:
+      - ./api-node:/app
+      - ./shared/uploads:/app/src/uploads
+      - ./shared/outputs:/app/src/outputs
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+
+  postgresql:
+    container_name: postgresql_food_adction_db
+    image: bitnami/postgresql:latest
+    environment:
+      - POSTGRESQL_USERNAME=${POSTGRESQL_USERNAME}
+      - POSTGRESQL_PASSWORD=${POSTGRESQL_PASSWORD}
+      - POSTGRESQL_DATABASE=${POSTGRESQL_DATABASE}
+      - POSTGRESQL_PORT_NUMBER=${POSTGRESQL_PORT_NUMBER}
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgresql_data:/bitnami/postgresql
+    networks:
+      - my_network_food_adction
+
+  python:
+    container_name: api_python_dev_food_adction
+    build:
+      context: ./api-python
+      dockerfile: Dockerfile.dev
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=development
+    volumes:
+      - ./api-python:/app
+      - ./shared/uploads:/app/src/uploads
+      - ./shared/outputs:/app/src/outputs
+    networks:
+      - my_network_food_adction
+
+volumes:
+  postgresql_data:
+    driver: local
+  shared_data:
+    driver: local
+
+networks:
+  my_network_food_adction:
+    driver: bridge

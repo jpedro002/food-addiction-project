@@ -1,0 +1,6 @@
+POST http://localhost:5000/predict-voley/block
+Content-Type: application/json
+
+{
+  "fileName": "bloqueio.mp4"
+}

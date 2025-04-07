@@ -1,0 +1,6 @@
+POST http://localhost:5000/predict-run
+Content-Type: application/json
+
+{
+  "fileName": "chpct.mp4"
+}

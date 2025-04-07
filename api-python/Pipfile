@@ -1,0 +1,29 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+Flask = "*"
+Flask-CORS = "*"
+tensorflow = "*"
+opencv-python = "*"
+mediapipe = "*"
+numpy = "*"
+pandas = "*"
+plotly = "*"
+hypercorn = "*"
+imageio = {extras = ["ffmpeg"], version = "*"}
+psycopg2-binary = "*"
+openpyxl = "*"
+sqlalchemy = "*"
+
+[requires]
+python_version = "3.12"
+
+[scripts]
+start = "flask --app src/main run --debug --host=0.0.0.0"
+test = "pytest"
+
+[dev-packages]
+ipykernel = "*"

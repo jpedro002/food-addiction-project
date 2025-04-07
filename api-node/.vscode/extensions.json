@@ -1,0 +1,13 @@
+{
+    "recommendations": [
+        "biomejs.biome",
+        "christian-kohler.path-intellisense",
+        "github.copilot",
+        "github.copilot-chat",
+        "gruntfuggly.todo-tree",
+        "ms-ceintl.vscode-language-pack-pt-br",
+        "oderwat.indent-rainbow",
+        "prisma.prisma",
+        "prisma.prisma-insider"
+    ]
+}

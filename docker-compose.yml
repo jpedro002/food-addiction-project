@@ -1,0 +1,67 @@
+services:
+  frontend:
+    container_name: frontend_prod_food_adction
+    build:
+      context: ./front-end
+      dockerfile: Dockerfile
+    env_file:
+      - ./front-end/.env
+    ports:
+      - "4176:80"
+    restart: always
+
+  api:
+    container_name: api_node_prod_food_adction
+    build:
+      context: ./api-node
+      dockerfile: Dockerfile
+    env_file:
+      - ./api-node/.env
+    ports:
+      - "3003:3000"
+    restart: always
+    depends_on:
+      - postgresql
+    networks:
+      - my_network_food_adction
+    environment:
+      - NODE_ENV=production
+
+  postgresql:
+    container_name: postgresql_food_adction_db
+    image: bitnami/postgresql:latest
+    environment:
+      - POSTGRESQL_USERNAME=${POSTGRESQL_USERNAME}
+      - POSTGRESQL_PASSWORD=${POSTGRESQL_PASSWORD}
+      - POSTGRESQL_DATABASE=${POSTGRESQL_DATABASE}
+      - POSTGRESQL_PORT_NUMBER=${POSTGRESQL_PORT_NUMBER}
+    ports:
+      - "5435:5432"
+    volumes:
+      - postgresql_data:/bitnami/postgresql
+    networks:
+      - my_network_food_adction
+
+  python:
+    container_name: api_python_prod_food_adction
+    build:
+      context: ./api-python
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "5003:5000"
+    environment:
+      - FLASK_ENV=production
+      - DB_URL=${DB_URL}
+    networks:
+      - my_network_food_adction
+
+volumes:
+  postgresql_data:
+    driver: local
+  shared_data:
+    driver: local
+
+networks:
+  my_network_food_adction:
+    driver: bridge

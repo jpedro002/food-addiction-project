@@ -1,0 +1,52 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int                     @id @default(autoincrement())
+  email      String                  @unique
+  password   String
+  role       Role
+  name       String                  @db.VarChar(90)
+  createdAt  DateTime                @default(now())
+  FormAnswer FormFoodAdctionAnswer[]
+
+  @@map("users")
+}
+
+enum Role {
+  ADMIN
+  HEALTHCARE_AGENT
+  // PATIENT
+}
+
+model FormFoodAdctionAnswer {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  q1                    Int?    @db.SmallInt
+  q2                    Int?    @db.SmallInt
+  q3                    Int?    @db.SmallInt
+  q4                    Int?    @db.SmallInt
+  q5                    Int?    @db.SmallInt
+  q6                    Int?    @db.SmallInt
+  q7                    Int?    @db.SmallInt
+  q8                    Int?    @db.SmallInt
+  q9                    Int?    @db.SmallInt
+  q10                   Int?    @db.SmallInt
+  q11                   Int?    @db.SmallInt
+  q12                   Int?    @db.SmallInt
+  q13                   Int?    @db.SmallInt
+  origem                String? @db.VarChar(30)
+  identificadorPaciente String? @map("identificador_paciente") @db.VarChar(30)
+
+  @@map("form_food_addiction_answers")
+}
