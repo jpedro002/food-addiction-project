@@ -80,8 +80,6 @@ export default function Dashboard() {
 		fetchReport()
 	}, [dispatch])
 
-	console.log('Relatório:', report)
-
 	if (loading) {
 		return <DashboardSkeleton />
 	}
@@ -401,7 +399,7 @@ export default function Dashboard() {
 							value={currentDiagnostic}
 							onValueChange={(value) => dispatch(setCurrentDiagnostic(value))}
 						>
-							<SelectTrigger className="w-[180px]">
+							<SelectTrigger className="w-[200px]">
 								<SelectValue placeholder="Filtrar por diagnóstico" />
 							</SelectTrigger>
 							<SelectContent>

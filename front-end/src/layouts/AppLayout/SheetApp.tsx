@@ -6,12 +6,15 @@ import {
 	SheetTitle,
 	SheetTrigger,
 } from '@/components/ui/sheet'
+import { useAppSelector } from '@/store'
 import { BrainCircuit, Menu } from 'lucide-react'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 export const SheetApp = () => {
 	const [isOpened, setIsOpened] = useState(false)
+
+	const a = useAppSelector((state) => state.auth.session)
 
 	const handleChangeOpen = () => {
 		setIsOpened((prev) => !prev)
@@ -37,9 +40,17 @@ export const SheetApp = () => {
 						<BrainCircuit className="h-6 w-6" />
 						<span className="sr-only">Página Inicial de Previsões</span>
 					</Link>
-					<NavLink onClick={handleChangeOpen} to="/admin" className="mt-4">
-						Admin
-					</NavLink>
+
+					{a?.role === 'ADMIN' && (
+						<>
+							<NavLink onClick={handleChangeOpen} to="/admin" className="mt-4">
+								Admin
+							</NavLink>
+							<NavLink onClick={handleChangeOpen} to="/admin/dashboard">
+								Dashboard
+							</NavLink>{' '}
+						</>
+					)}
 
 					<NavLink onClick={handleChangeOpen} to="/">
 						app

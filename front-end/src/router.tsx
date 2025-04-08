@@ -8,7 +8,7 @@ import { PrivateRoute, SingIn } from './pages/auth'
 
 const Roles = {
 	ADMIN: 'ADMIN',
-	NURSE: 'NURSE',
+	HEALTHCARE_AGENT: 'HEALTHCARE_AGENT',
 }
 
 export const router = createBrowserRouter([
@@ -46,7 +46,7 @@ export const router = createBrowserRouter([
 			{
 				path: '',
 				element: (
-					<PrivateRoute allowedRoles={[Roles.NURSE, Roles.ADMIN]}>
+					<PrivateRoute allowedRoles={[Roles.HEALTHCARE_AGENT, Roles.ADMIN]}>
 						<AppLayout />
 					</PrivateRoute>
 				),

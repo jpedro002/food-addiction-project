@@ -41,8 +41,8 @@ export const SheetAppMobile = () => {
 						Admin
 					</NavLink>
 
-					<NavLink onClick={handleChangeOpen} to="/admin/ulcer-report">
-						Dashboard lesão por pressão
+					<NavLink onClick={handleChangeOpen} to="/admin/dashboard">
+						Dashboard
 					</NavLink>
 
 					<NavLink onClick={handleChangeOpen} to="/">

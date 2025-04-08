@@ -18,8 +18,6 @@ export const useFormFoodAdctionModel = ({
 
 	const { createFormAnswer } = foodAddictionService
 
-	console.log('currentQuestion', createFormAnswer)
-
 	useAppTitle({
 		title: 'Form',
 	})
