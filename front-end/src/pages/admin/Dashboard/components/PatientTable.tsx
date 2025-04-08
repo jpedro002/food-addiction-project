@@ -1,7 +1,6 @@
 'use client'
 
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button/button'
 import {
 	Table,
 	TableBody,
@@ -11,11 +10,36 @@ import {
 	TableRow,
 } from '@/components/ui/table'
 import { useAppSelector } from '@/store'
-import { Eye } from 'lucide-react'
+import { useMemo } from 'react'
 
 export default function PatientTable() {
-	// Obter dados dos pacientes do Redux store
-	const { report, loading, error } = useAppSelector((state) => state.foodReport)
+	// Obter dados dos pacientes e o filtro atual do Redux store
+	const { report, loading, error, currentDiagnostic } = useAppSelector(
+		(state) => state.foodReport,
+	)
+
+	// Filtrar pacientes com base no diagnóstico selecionado
+	const filteredPatients = useMemo(() => {
+		if (!report || !report.lista_pacientes) return []
+
+		// Se o filtro for 'all', retornar todos os pacientes
+		if (currentDiagnostic === 'all') {
+			return report.lista_pacientes
+		}
+
+		// Mapeamento dos valores do Select para os diagnósticos reais
+		const diagnosticMapping: Record<string, string> = {
+			severe: 'Grave',
+			moderate: 'Moderado',
+			mild: 'Leve',
+			none: 'Sem adicção',
+		}
+
+		// Filtrar pacientes pelo diagnóstico
+		return report.lista_pacientes.filter(
+			(patient) => patient.Diagnostico === diagnosticMapping[currentDiagnostic],
+		)
+	}, [report, currentDiagnostic])
 
 	// Função para renderizar o badge de diagnóstico com as cores corretas
 	const getDiagnosisBadge = (diagnosis: string) => {
@@ -62,14 +86,10 @@ export default function PatientTable() {
 	}
 
 	// Verificar se há dados disponíveis
-	if (
-		!report ||
-		!report.lista_pacientes ||
-		report.lista_pacientes.length === 0
-	) {
+	if (!filteredPatients || filteredPatients.length === 0) {
 		return (
 			<div className="flex h-40 items-center justify-center rounded-md border">
-				Nenhum dado de paciente disponível
+				Nenhum paciente encontrado com o filtro selecionado
 			</div>
 		)
 	}
@@ -87,7 +107,7 @@ export default function PatientTable() {
 					</TableRow>
 				</TableHeader>
 				<TableBody>
-					{report.lista_pacientes.map((patient, index) => (
+					{filteredPatients.map((patient, index) => (
 						<TableRow key={`${patient.ID_Paciente || 'sem-id'}-${index}`}>
 							<TableCell className="font-medium">
 								{patient.ID_Paciente || 'N/A'}

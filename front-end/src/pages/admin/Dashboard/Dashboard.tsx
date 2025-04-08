@@ -32,6 +32,7 @@ import {
 	fetchReportFailure,
 	fetchReportStart,
 	fetchReportSuccess,
+	setCurrentDiagnostic,
 	setCurrentQuestion,
 } from '@/store/slices/foodAddictionSlice'
 import {
@@ -54,9 +55,8 @@ import PatientTable from './components/PatientTable'
 
 export default function Dashboard() {
 	const dispatch = useDispatch()
-	const { report, loading, error, currentQuestion } = useAppSelector(
-		(state) => state.foodReport,
-	)
+	const { report, loading, error, currentQuestion, currentDiagnostic } =
+		useAppSelector((state) => state.foodReport)
 
 	useAppTitle({
 		title: 'Dashboard',
@@ -397,16 +397,19 @@ export default function Dashboard() {
 								Informações detalhadas por paciente
 							</CardDescription>
 						</div>
-						<Select defaultValue="all">
+						<Select
+							value={currentDiagnostic}
+							onValueChange={(value) => dispatch(setCurrentDiagnostic(value))}
+						>
 							<SelectTrigger className="w-[180px]">
 								<SelectValue placeholder="Filtrar por diagnóstico" />
 							</SelectTrigger>
 							<SelectContent>
 								<SelectItem value="all">Todos os diagnósticos</SelectItem>
-								<SelectItem value="severe">adicção Acentuada</SelectItem>
-								<SelectItem value="moderate">adicção Moderada</SelectItem>
-								<SelectItem value="mild">adicção Leve</SelectItem>
-								<SelectItem value="none">Sem adicção</SelectItem>
+								<SelectItem value="severe">Adicção Grave</SelectItem>
+								<SelectItem value="moderate">Adicção Moderada</SelectItem>
+								<SelectItem value="mild">Adicção Leve</SelectItem>
+								<SelectItem value="none">Sem Adicção</SelectItem>
 							</SelectContent>
 						</Select>
 					</div>

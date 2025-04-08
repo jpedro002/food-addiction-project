@@ -6,6 +6,7 @@ interface FoodAddictionState {
 	loading: boolean
 	error: string | null
 	currentQuestion: string
+	currentDiagnostic: string
 }
 
 const initialState: FoodAddictionState = {
@@ -13,6 +14,7 @@ const initialState: FoodAddictionState = {
 	loading: true,
 	error: null,
 	currentQuestion: 'q1',
+	currentDiagnostic: 'all',
 }
 
 const foodAddictionSlice = createSlice({
@@ -35,6 +37,9 @@ const foodAddictionSlice = createSlice({
 		setCurrentQuestion: (state, action: PayloadAction<string>) => {
 			state.currentQuestion = action.payload
 		},
+		setCurrentDiagnostic: (state, action: PayloadAction<string>) => {
+			state.currentDiagnostic = action.payload
+		},
 	},
 })
 
@@ -43,6 +48,7 @@ export const {
 	fetchReportSuccess,
 	fetchReportFailure,
 	setCurrentQuestion,
+	setCurrentDiagnostic,
 } = foodAddictionSlice.actions
 
 export default foodAddictionSlice.reducer

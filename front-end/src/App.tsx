@@ -9,7 +9,7 @@ export const App = () => {
 	return (
 		<ReduxProvider>
 			<HelmetProvider>
-				<Helmet titleTemplate="%s | title title" />
+				<Helmet titleTemplate="%s | Food Addiction Yale" />
 				<RouterProvider router={router} />
 				<Toaster richColors />
 			</HelmetProvider>
