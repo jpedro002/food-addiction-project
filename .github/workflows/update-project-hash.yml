@@ -1,0 +1,30 @@
+name: Update Hash
+
+on:
+  push:
+    branches: [ 'main' ]
+
+jobs:
+  update-hash:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Gera o hash
+        run: |
+          HASH=$(tar cf - --exclude='.git' --exclude='node_modules' . | sha256sum | cut -d ' ' -f1)
+          echo "HASH=$HASH" >> $GITHUB_ENV
+
+      - name: Atualiza o README.md
+        run: |
+          sed -i "s/[0-9a-f]\{64\}/$HASH/g" README.md
+
+      - name: Commit changes
+        run: |
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+          git add README.md
+          git commit -m "Atualiza hash do projeto"
+          git push

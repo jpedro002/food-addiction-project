@@ -1,94 +1,114 @@
-# project-hospital
+## Estrutura do Projeto
 
+O projeto é composto por múltiplos serviços:
+- **Frontend**: Aplicação web em React/Vite
+- **API Node.js**: Backend principal
+- **API Python**: Serviço para processamento de dados
+- **PostgreSQL**: Banco de dados
 
-# 🏥 CRUD de Leitos
+## Requisitos
 
-## 🔍 Filtragem
+- Docker e Docker Compose instalados
+- Git para clonar o repositório
 
-### Front-end:
-- Filtros por:
-  - Nome do leito.
-  - Número do prontuário.
-  - Status de checagem: `Checado` | `Pendente`.
-  - Status de ocupação: `Ocupado` | `Disponível`.
-- URL com estados dos filtros usando **query params**.
+## Configuração das Variáveis de Ambiente
 
-### Back-end:
-- Suporte a **query params** para:
-  - `nome` (string | opcional).
-  - `prontuario` (string | opcional).
-  - `statusChecagem` (enum: `"Checado"`, `"Pendente"`).
-  - `statusOcupacao` (enum: `"Ocupado"`, `"Disponível"`).
+### 1. Arquivo .env na Raiz do Projeto
 
----
+Crie um arquivo .env na raiz do projeto com as seguintes variáveis:
 
-## 📋 Listagem de Leitos
+```
+POSTGRESQL_USERNAME="docker"
+POSTGRESQL_PASSWORD="docker"
+POSTGRESQL_DATABASE="food-adction"
+POSTGRESQL_PORT_NUMBER="5432"
 
-- Exibição de cards para cada leito com:
-  - **Identificação do leito**.
-  - **Número do prontuário** (ou "Sem paciente").
-  - **Status de checagem** com indicador visual:
-    - 🟢 **Verde** para "Checado".
-    - 🔴 **Vermelho** para "Pendente".
-  - **Status de ocupação** com indicador visual:
-    - 🟢 **Verde** para "Disponível".
-    - 🔴 **Vermelho** para "Ocupado".
-  - Botão para acessar **detalhes do leito**.
+DATABASE_URL="postgresql://docker:docker@postgresql:5432/food-adction"
+DB_URL="postgresql://docker:docker@postgresql:5432/food-adction"
+```
 
----
+### 2. Arquivo .env para a API Node.js
 
-## ⚙️ Outras Funcionalidades:
+Crie um arquivo .env na pasta api-node com as seguintes variáveis:
 
-- Carregamento dinâmico da lista após aplicar filtros.
-- Mensagem de feedback caso **nenhum leito corresponda** aos filtros.
-- Suporte a **paginação** (opcional, dependendo do volume de dados).
+```
+NODE_ENV=development
+JWT_SECRET=sua_chave_secreta_aqui
+CORS_ORIGIN=http://localhost:5173
+DATABASE_URL=postgresql://docker:docker@postgresql:5432/food-adction
+FIRST_ADMIN_PASSWORD=senha_admin_inicial
+PUBLIC_DIR=/src/outputs
+UPLOAD_DIR=/src/uploads
+PORT=3000
+MAX_FILE_SIZE_MB=10
+PY_API_URL=http://python:5000
+```
 
----
+### 3. Arquivo .env para o Frontend
 
-# 🏗️ Definição do CRUD
+Crie um arquivo .env na pasta front-end com:
 
-## 📌 1. Criação de Leito (Create)
+```
+VITE_API_URL=http://localhost:3000
+```
 
-- **Endpoint:** `POST /leitos`
-- **Campos necessários:**
-  - `nome` (string) — Identificação do leito.
-  - `prontuario` (string | opcional) — Número do prontuário, se houver paciente.
-  - `statusChecagem` (enum: `"Checado"`, `"Pendente"`) — Estado da última checagem.
-  - `statusOcupacao` (enum: `"Ocupado"`, `"Disponível"`) — Disponibilidade do leito.
+## Executando o Projeto
 
----
+### Ambiente de Desenvolvimento
 
-## 🔍 2. Listagem de Leitos (Read)
+Execute o seguinte comando na raiz do projeto:
 
-- **Endpoint:** `GET /leitos`
-- **Query Params:**
-  - `nome` (string | opcional).
-  - `prontuario` (string | opcional).
-  - `statusChecagem` (enum: `"Checado"`, `"Pendente"`).
-  - `statusOcupacao` (enum: `"Ocupado"`, `"Disponível"`).
+```bash
+./start-dev.sh
+```
 
-- **Resposta:** Lista de leitos com informações básicas (como visto na tela).
+Ou manualmente:
 
-- **Endpoint para detalhes:** `GET /leitos/{id}`
-  - **Resposta:** Informações completas do leito selecionado.
+```bash
+docker compose -f docker-compose.dev.yml up --build -d
+```
 
----
+Isso irá:
+- Construir e iniciar todos os contêineres
+- Montar diretórios locais como volumes para desenvolvimento
+- Configurar a rede para comunicação entre os serviços
+- Expor as portas necessárias:
+  - Frontend: http://localhost:5173
+  - API Node.js: http://localhost:3000
+  - API Python: http://localhost:5000
+  - PostgreSQL: localhost:5432
 
-## ✏️ 3. Atualização de Leito (Update)
+## Verificação de Integridade do Projeto
 
-- **Endpoint:** `PUT /leitos/{id}`
-- **Campos possíveis para atualização:**
-  - `prontuario` (string | opcional) — Para associar ou remover paciente.
-  - `statusChecagem` (enum: `"Checado"`, `"Pendente"`) — Atualização do status de checagem.
-  - `statusOcupacao` (enum: `"Ocupado"`, `"Disponível"`) — Atualização do status de ocupação.
+O projeto inclui um mecanismo para verificar sua integridade usando um hash SHA-256. O hash é gerado a partir de todos os arquivos do projeto, excluindo o diretório .git e as pastas `node_modules`.
 
----
+Para verificar a integridade do seu projeto, execute:
 
-## 🗑️ 4. Exclusão de Leito (Delete)
+```bash
+tar cf - --exclude='.git' --exclude='node_modules' . | sha256sum
+```
 
-- **Endpoint:** `DELETE /leitos/{id}`
-- **Ação:** Remove o leito do sistema (pode exigir confirmação).
+O resultado deve corresponder ao hash de referência:
+```
+a1f0c35413abcb4959f5f286d9640dd5159e67b1bd917678c46a746442790f0d
+```
 
----
+Se os hashes não coincidirem, isso pode indicar modificações não autorizadas ou arquivos corrompidos.
 
-# food-addiction-project
+## Solução de Problemas
+
+- **Erro de conexão com o banco de dados**: Verifique se as variáveis de ambiente do PostgreSQL estão configuradas corretamente.
+- **Serviços não se comunicam**: Certifique-se de que todos os serviços estão na mesma rede `my_network_food_adction`.
+- **Volumes não persistem**: Verifique se os volumes `postgresql_data` e `shared_data` estão configurados corretamente.
+
+Para visualizar logs dos contêineres:
+```bash
+docker logs [nome-do-container]
+```
+
+Para parar os serviços:
+```bash
+docker compose -f docker-compose.dev.yml down  # Para desenvolvimento
+docker compose down  # Para produção
+
+``` 
