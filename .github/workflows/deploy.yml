@@ -1,92 +1,92 @@
-name: CI/CD
+# name: CI/CD
 
-on:
-  push:
-    branches:
-      - main
+# on:
+#   push:
+#     branches:
+#       - main
 
-jobs:
-  detect_changes:
-    runs-on: ubuntu-latest
-    outputs:
-      node: ${{ steps.changes.outputs.node }}
-      frontend: ${{ steps.changes.outputs.frontend }}
-      python: ${{ steps.changes.outputs.python }}
-    steps:
-      - name: Checkout código
-        uses: actions/checkout@v2
+# jobs:
+#   detect_changes:
+#     runs-on: ubuntu-latest
+#     outputs:
+#       node: ${{ steps.changes.outputs.node }}
+#       frontend: ${{ steps.changes.outputs.frontend }}
+#       python: ${{ steps.changes.outputs.python }}
+#     steps:
+#       - name: Checkout código
+#         uses: actions/checkout@v2
 
-      - name: Detectar mudanças
-        id: changes
-        uses: dorny/paths-filter@v2
-        with:
-          filters: |
-            frontend:
-              - 'front-end/**'
-            node:
-              - 'api-node/**'
-            python:
-              - 'api-python/**'
+#       - name: Detectar mudanças
+#         id: changes
+#         uses: dorny/paths-filter@v2
+#         with:
+#           filters: |
+#             frontend:
+#               - 'front-end/**'
+#             node:
+#               - 'api-node/**'
+#             python:
+#               - 'api-python/**'
 
-  fetch_code:
-    needs: detect_changes
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout código
-        uses: actions/checkout@v4
+#   fetch_code:
+#     needs: detect_changes
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout código
+#         uses: actions/checkout@v4
 
-      - name: Fetch e Reset do Código
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            cd ~/project-hospital
-            git fetch --all
-            git reset --hard origin/main
+#       - name: Fetch e Reset do Código
+#         uses: appleboy/ssh-action@v1.0.3
+#         with:
+#           host: ${{ secrets.SSH_HOST }}
+#           username: ${{ secrets.SSH_USER }}
+#           key: ${{ secrets.SSH_PRIVATE_KEY }}
+#           script: |
+#             cd ~/project-hospital
+#             git fetch --all
+#             git reset --hard origin/main
 
-  deploy_node:
-    needs: [detect_changes, fetch_code]
-    if: needs.detect_changes.outputs.node == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy Backend
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            cd ~/project-hospital
-            docker-compose up --build -d --no-deps api
+#   deploy_node:
+#     needs: [detect_changes, fetch_code]
+#     if: needs.detect_changes.outputs.node == 'true'
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Deploy Backend
+#         uses: appleboy/ssh-action@v1.0.3
+#         with:
+#           host: ${{ secrets.SSH_HOST }}
+#           username: ${{ secrets.SSH_USER }}
+#           key: ${{ secrets.SSH_PRIVATE_KEY }}
+#           script: |
+#             cd ~/project-hospital
+#             docker-compose up --build -d --no-deps api
 
-  deploy_frontend:
-    needs: [detect_changes, fetch_code]
-    if: needs.detect_changes.outputs.frontend == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy Frontend
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            cd ~/project-hospital
-            docker-compose up --build -d --no-deps frontend
+#   deploy_frontend:
+#     needs: [detect_changes, fetch_code]
+#     if: needs.detect_changes.outputs.frontend == 'true'
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Deploy Frontend
+#         uses: appleboy/ssh-action@v1.0.3
+#         with:
+#           host: ${{ secrets.SSH_HOST }}
+#           username: ${{ secrets.SSH_USER }}
+#           key: ${{ secrets.SSH_PRIVATE_KEY }}
+#           script: |
+#             cd ~/project-hospital
+#             docker-compose up --build -d --no-deps frontend
 
-  deploy_python:
-    needs: [detect_changes, fetch_code]
-    if: needs.detect_changes.outputs.python == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy Python
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            cd ~/project-hospital
-            docker-compose up --build -d --no-deps python
+#   deploy_python:
+#     needs: [detect_changes, fetch_code]
+#     if: needs.detect_changes.outputs.python == 'true'
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Deploy Python
+#         uses: appleboy/ssh-action@v1.0.3
+#         with:
+#           host: ${{ secrets.SSH_HOST }}
+#           username: ${{ secrets.SSH_USER }}
+#           key: ${{ secrets.SSH_PRIVATE_KEY }}
+#           script: |
+#             cd ~/project-hospital
+#             docker-compose up --build -d --no-deps python
