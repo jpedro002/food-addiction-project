@@ -56,8 +56,6 @@ services:
       context: ./api-python
       dockerfile: Dockerfile
     restart: always
-    ports:
-      - "5003:5000"
     environment:
       - FLASK_ENV=${FLASK_ENV}
       - DB_URL=${DB_URL}
