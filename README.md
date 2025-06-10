@@ -90,7 +90,7 @@ tar cf - --exclude='.git' --exclude='node_modules' . | sha256sum
 
 O resultado deve corresponder ao hash de referência:
 ```
-782b0f6e855a1677f78bfc86727fb415e977c0026725eb26b31725340e26a6a8
+70c4a725e1003f18fe3050d51aa5fe39b6a2560cdf66a5927351ea5b7bbecfe4
 ```
 
 Se os hashes não coincidirem, isso pode indicar modificações não autorizadas ou arquivos corrompidos.
